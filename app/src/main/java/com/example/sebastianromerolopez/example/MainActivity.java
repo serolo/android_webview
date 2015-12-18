@@ -21,15 +21,28 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
+
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        Button button1 = (Button) findViewById(R.id.button1);
+        relativeLayout = new RelativeLayout(this);
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+        relativeLayout.setBackgroundColor(Color.BLUE);
+
+        setContentView(relativeLayout, rlp);
+        /*
+        setContentView(R.layout.activity_main);
+        */
+
+        Button button1 = new Button(this);
+        button1.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        button1.setText("Button 1");
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -37,15 +50,29 @@ public class MainActivity extends AppCompatActivity {
                 CreateWebView();
             }
         });
+        button1.setWidth(300);
+        button1.setHeight(50);
+        button1.setX(0);
+        button1.setY(0);
 
-        Button button2 = (Button) findViewById(R.id.button2);
+        //rlp.setMargins(25, 0, 0, 0);
+
+        Button button2 = new Button(this);
+        button2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        button2.setText("Button 2");
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
                 Log.e("Button 2", "OnClick");
             }
         });
+        button2.setWidth(300);
+        button2.setHeight(50);
+        button2.setX(0);
+        button2.setY(300);
 
+        relativeLayout.addView(button1);
+        relativeLayout.addView(button2);
     }
 
     @Override
@@ -79,14 +106,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void CreateWebView () {
 
-        Context mContext = this.getBaseContext();
-
-        LinearLayout view = new LinearLayout(mContext);
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-        view.setOrientation(LinearLayout.VERTICAL);
-
-        WebView testWebView = new WebView(view.getContext());
-
+        WebView testWebView = new WebView(this);
+        testWebView.setX(0);
+        testWebView.setY(0);
+        testWebView.setZ(10);
         testWebView.getSettings().setJavaScriptEnabled(true);
 
         testWebView.setBackgroundColor(0);
@@ -153,7 +176,11 @@ public class MainActivity extends AppCompatActivity {
                         "\t</body>\n" +
                         "</html>";
 
-        testWebView.loadData(engineScript, "text/html", (String)null);
+        testWebView.loadData(engineScript, "text/html", (String) null);
+
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+        rlp.addRule(RelativeLayout.CENTER_VERTICAL);
+        relativeLayout.addView(testWebView, rlp);
     }
 
     private WebChromeClient getWebChromeClient() {
