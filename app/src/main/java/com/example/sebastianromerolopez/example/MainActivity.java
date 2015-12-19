@@ -123,60 +123,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
 
-        String engineScript =
-                "<html>\n" +
-                        "\t<head>\n" +
-                        "\t\t<title>pixi.js example 2 loading a sprite sheet</title>\n" +
-                        "\t\t<style>\n" +
-                        "\t\t\tbody {\n" +
-                        "\t\t\t\tmargin: 0;\n" +
-                        "\t\t\t\tpadding: 0;\n" +
-                        "\t\t\t\tbackground-color: transparent;\n"+
-                        "\t\t\t}\n" +
-                        "\t\t</style>\n" +
-                        "\t\t<script src=\"http://www.goodboydigital.com/pixijs/examples/snake/pixi.dev.js\"></script>\n" +
-                        "\t</head>\n" +
-                        "\t<body>\n" +
-                        "\t\t<script>\n" +
-                        "\n" +
-                        "\t\tvar count = 0;\n" +
-                        "\t\tvar stage = new PIXI.Stage();\n" +
-                        "\t\tvar renderOption = {\"transparent\": true};\n" +
-                        "\t\tvar renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight,null,true);\n" +
-                        "\t\tvar target = new PIXI.Point();\n" +
-                        "\t\tdocument.body.appendChild(renderer.view);\n" +
-                        "\t\tcount = 0;\n" +
-                        "\t\tvar length = 918 / 20;\n" +
-                        "\t\tpoints = [];\n" +
-                        "\t\tfor (var i = 0; i < 20; i++) {\n" +
-                        "\t\t\tvar segSize = length;\n" +
-                        "\t\t\tpoints.push(new PIXI.Point(i * length, 0));\n" +
-                        "\t\t};\n" +
-                        "\t\tstrip = new PIXI.Rope(PIXI.Texture.fromImage(\"http://www.goodboydigital.com/pixijs/examples/snake/snake.png\"), points);\n" +
-                        "\t\tstrip.x = -918/2;\n" +
-                        "\t\tvar snakeContainer = new PIXI.DisplayObjectContainer();\n" +
-                        "\t\tsnakeContainer.position.x = window.innerWidth/2;\n" +
-                        "\t\tsnakeContainer.position.y = window.innerHeight/2;\n" +
-                        "\t\tsnakeContainer.scale.set( window.innerWidth / 1100);\n" +
-                        "\t\tstage.addChild(snakeContainer);\n" +
-                        "\t\tsnakeContainer.addChild(strip);\n" +
-                        "\t\trequestAnimFrame(animate);\n" +
-                        "\t\tfunction animate() {\n" +
-                        "\t\t\tcount += 0.1;\t\t\n" +
-                        "\t\t\tvar length = 918 / 20;\n" +
-                        "\t\t\tfor (var i = 0; i < points.length; i++) {\n" +
-                        "\t\t\t\tpoints[i].y = Math.sin(i *0.5  + count) * 30;\n" +
-                        "\t\t\t\tpoints[i].x = i * length + Math.cos(i *0.3  + count) * 20;\n" +
-                        "\t\t\t};\n" +
-                        "\t\t    renderer.render(stage);\n" +
-                        "\t\t    requestAnimFrame(animate);\n" +
-                        "\t\t}\n" +
-                        "\t\t</script>\n" +
-                        "\t\t\n" +
-                        "\t</body>\n" +
-                        "</html>";
 
-        testWebView.loadData(engineScript, "text/html", (String) null);
+        testWebView.loadUrl("file:///android_asset/igniteUI.html");
 
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
         rlp.addRule(RelativeLayout.CENTER_VERTICAL);
