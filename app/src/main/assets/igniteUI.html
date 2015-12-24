@@ -12,6 +12,7 @@
 	</head>
 	<body>		
 		<script>
+			//window.addEventListener('resize', resize, false);
 			var innerWidth = window.innerWidth,
 				innerHeight = window.innerHeight;
 
@@ -22,16 +23,24 @@
 
 			var resources = PIXI.loader.resources;
 
-			var scaleX = 1.0/*innerWidth/320*/, scaleY = 1.0/*innerHeight/480*/;
+			var ratio = 1;
 
-			console.log("scale: "+scaleX+" , "+scaleY);
+            if(innerHeight > innerWidth) { 
+                ratio = innerWidth/640;
+            }    
+            else {
+            	ratio = innerHeight/960;
+            }
+
+            console.log("innerWidth: "+innerWidth);
+			console.log("innerHeight: "+innerHeight);
 
 			var stage = new PIXI.Container();
-			stage.position = new PIXI.Point(0,0);
+			stage.position = new PIXI.Point(innerWidth/2,innerHeight/2);
 			stage.width = innerWidth;
 			stage.height = innerHeight;
-			//stage.anchor = new PIXI.Point(0.5,0.5);
-			stage.scale = new PIXI.Point(scaleX,scaleY);
+			stage.anchor = new PIXI.Point(0.5,0.5);
+			stage.scale = new PIXI.Point(ratio,ratio);
 			
 			var options = {transparent:true};
 
@@ -49,12 +58,12 @@
 			function onAssetsLoaded() {
 				//Left Containers			
 				var TopLeftContainer = new PIXI.Container();
-				TopLeftContainer.position = new PIXI.Point(0,0);
-				TopLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+				TopLeftContainer.position = new PIXI.Point(-innerWidth/2,-innerHeight/2);
+				TopLeftContainer.anchor = new PIXI.Point(0,0);
 				stage.addChild(TopLeftContainer);
 
 				var MiddleLeftContainer = new PIXI.Container();
-				MiddleLeftContainer.position = new PIXI.Point(0,innerHeight/(2*scaleY));
+				MiddleLeftContainer.position = new PIXI.Point(0,innerHeight/(2*ratio));
 				MiddleLeftContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(MiddleLeftContainer);
 
@@ -65,17 +74,17 @@
 
 				//Center Containers
 				var TopCenterContainer = new PIXI.Container();
-				TopCenterContainer.position = new PIXI.Point(innerWidth/(2*scaleX),0);
+				TopCenterContainer.position = new PIXI.Point(innerWidth/(2*ratio),0);
 				TopCenterContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(TopCenterContainer);
 
 				var MiddleCenterContainer = new PIXI.Container();
-				MiddleCenterContainer.position = new PIXI.Point(innerWidth/(2*scaleX),innerHeight/(2*scaleY));
+				MiddleCenterContainer.position = new PIXI.Point(0,0);
 				MiddleCenterContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(MiddleCenterContainer);
 
 				var BottomCenterContainer = new PIXI.Container();
-				BottomCenterContainer.position = new PIXI.Point(innerWidth/(2*scaleX),innerHeight);
+				BottomCenterContainer.position = new PIXI.Point(innerWidth/(2*ratio),innerHeight);
 				BottomCenterContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(BottomCenterContainer);
 
@@ -86,7 +95,7 @@
 				stage.addChild(TopRightContainer);
 
 				var MiddleRightContainer = new PIXI.Container();
-				MiddleRightContainer.position = new PIXI.Point(innerWidth,innerHeight/(2*scaleY));
+				MiddleRightContainer.position = new PIXI.Point(innerWidth,innerHeight/(2*ratio));
 				MiddleRightContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(MiddleRightContainer);
 
@@ -94,39 +103,76 @@
 				BottomRightContainer.position = new PIXI.Point(innerWidth,innerHeight);
 				BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(BottomRightContainer);
+				
 
-				var missionTab1 = CreateEventTab( 1, new PIXI.Point(24,-170) );
+				/*
+				var missionTab1 = CreateEventTab( 1, new PIXI.Point(24,-170),1 );
 				MiddleLeftContainer.addChild(missionTab1);
 
-				var missionTab2 = CreateEventTab( 2, new PIXI.Point(24,-60) );
+				var missionTab2 = CreateEventTab( 2, new PIXI.Point(24,-60),1 );
 				MiddleLeftContainer.addChild(missionTab2);
 
-				var missionTab3 = CreateEventTab( 3, new PIXI.Point(24,60) );
+				var missionTab3 = CreateEventTab( 3, new PIXI.Point(24,60),1 );
 				MiddleLeftContainer.addChild(missionTab3);
 
-				var missionTab4 = CreateEventTab( 4, new PIXI.Point(24,170) );
+				var missionTab4 = CreateEventTab( 4, new PIXI.Point(24,170),1 );
 				MiddleLeftContainer.addChild(missionTab4);
+				
+				
+				var leaderBoardTab1 = CreateEventTab( 5, new PIXI.Point(-100,-170),2 );
+				MiddleRightContainer.addChild(leaderBoardTab1);
+
+				var leaderBoardTab2 = CreateEventTab( 6, new PIXI.Point(-24,-60),2 );
+				MiddleRightContainer.addChild(leaderBoardTab2);
+
+				var leaderBoardTab3 = CreateEventTab( 7, new PIXI.Point(-24,60),2 );
+				MiddleRightContainer.addChild(leaderBoardTab3);
+				
+				var leaderBoardTab4 = CreateEventTab( 8, new PIXI.Point(-24,170),2 );
+				BottomRightContainer.addChild(leaderBoardTab4);
+				*/
+				
+				var TabImage = new PIXI.Sprite( resources.popUpSlice.texture);
+				TabImage.anchor = new PIXI.Point(0.5,0.5);
+				TabImage.scale = new PIXI.Point(0.7,0.7);
+				TabImage.tint = 0x9C551F;
+				TabImage.width = 150;
+				TabImage.height = 80;
+				TabImage.position = new PIXI.Point(0,0);;
+				TopLeftContainer.addChild(TabImage);
 
 				renderer.render(stage); 	
+				//resize();
 			}
 
-			function CreateEventTab ( index , tabPosition ) {
+			function CreateEventTab ( index , tabPosition, type ) {
 				var EventTabContainer = new PIXI.Container();
 				EventTabContainer.position = new PIXI.Point(0,0);
 				EventTabContainer.anchor = new PIXI.Point(0.5,0.5);
 				EventTabContainer.index = index;
+				EventTabContainer.type = type;
 				tabs.push(EventTabContainer);
 
 				var background = new PIXI.Sprite( resources.popUpSlice.texture);
-				background.anchor = new PIXI.Point(0.5,0.5);
+				if( type == 1 ) {
+					background.anchor = new PIXI.Point(1,0.5);
+				}
+				else {
+					background.anchor = new PIXI.Point(0,0.5);
+				}
 				background.tint = 0x462E27;
 				background.width = 468;
 				background.height = 456;
-				background.position = new PIXI.Point(-237,0);
+				background.position = new PIXI.Point(0,0);
 				EventTabContainer.addChild(background);
 
 				var TabContainer = new PIXI.Container();
-				TabContainer.anchor = new PIXI.Point(0.5,0.5);
+				if( type == 1 ) {
+					TabContainer.anchor = new PIXI.Point(1,0.5);
+				}
+				else {
+					TabContainer.anchor = new PIXI.Point(0,0.5);
+				}
 				TabContainer.width = 120;
 				TabContainer.height = 100;
 				TabContainer.position = tabPosition;
@@ -175,7 +221,12 @@
 				for( var i=0; i<tabs.length ; i++ ) {
 					if( tabs[i].index == this.parent.index ) {
 						if( tabs[i].x == 0 ) {
-							tabs[i].position.set(200,0);
+							if( tabs[i].type == 1 ) {
+								tabs[i].position.set(400,0);
+							}
+							else {
+								tabs[i].position.set(-400,0);
+							}
 						}
 						else {
 							tabs[i].position.set(0,0);
