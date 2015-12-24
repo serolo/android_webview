@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         });
         button1.setWidth(300);
         button1.setHeight(50);
-        button1.setX(0);
+        button1.setX(300);
         button1.setY(0);
 
         //rlp.setMargins(25, 0, 0, 0);
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
         button2.setWidth(300);
         button2.setHeight(50);
-        button2.setX(0);
+        button2.setX(300);
         button2.setY(300);
 
         relativeLayout.addView(button1);
@@ -106,73 +107,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void CreateWebView () {
 
-        WebView testWebView = new WebView(this);
-        testWebView.setX(0);
-        testWebView.setY(0);
-        testWebView.setZ(10);
-        testWebView.getSettings().setJavaScriptEnabled(true);
+        /*
+        final IgniteUIWebView webView = new IgniteUIWebView(this);
 
-        testWebView.setBackgroundColor(0);
-        testWebView.setBackgroundColor(Color.TRANSPARENT);
-
-        testWebView.setWebChromeClient(this.getWebChromeClient());
-        testWebView.setWebViewClient(this.getWebViewClient());
-
-        WebSettings webSettings = testWebView.getSettings();
-
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowFileAccess(true);
-
-
-        testWebView.loadUrl("file:///android_asset/igniteUI.html");
+        */
 
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
         rlp.addRule(RelativeLayout.CENTER_VERTICAL);
-        relativeLayout.addView(testWebView, rlp);
-    }
 
-    private WebChromeClient getWebChromeClient() {
-        return new WebChromeClient() {
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.e("FuelIgniteUI", "WebChromeClient onConsoleMessage, message = " + consoleMessage.message());
-                return true;
-            }
+        IgniteUILoyout igniteUILoyout = new IgniteUILoyout(this);
+        igniteUILoyout.loadContent();
+        igniteUILoyout.setZ(10);
+        igniteUILoyout.setLayoutParams(rlp);
+        relativeLayout.addView(igniteUILoyout);
 
-            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-                return true;
-            }
 
-            public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-                return true;
-            }
-
-            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
-                return true;
-            }
-        };
-    }
-
-    private WebViewClient getWebViewClient() {
-        return new WebViewClient() {
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                Log.e("FuelIgniteUI", "WebViewClient onPageStarted, url = " + url);
-            }
-
-            public void onPageFinished(WebView view, String url) {
-                Log.e("FuelIgniteUI", "WebViewClient onPageFinished, url = " + url);
-                view.setBackgroundColor(0x00000000);
-                if (Build.VERSION.SDK_INT >= 11) {
-                    view.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-                }
-            }
-
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-
-            }
-
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return true;
-            }
-        };
     }
 }

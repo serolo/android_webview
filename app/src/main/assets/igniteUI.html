@@ -1,1 +1,201 @@
-<html><head><title>pixi.js example 2 loading a sprite sheet</title><style>body {margin: 0;padding: 0;background-color: transparent;}</style><script src="http://www.goodboydigital.com/pixijs/examples/snake/pixi.dev.js"></script></head><body><script>var count = 0;var stage = new PIXI.Stage();var renderOption = {"transparent": true};var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight,null,true);var target = new PIXI.Point();document.body.appendChild(renderer.view);count = 0;var length = 918 / 20;points = [];for (var i = 0; i < 20; i++) {var segSize = length;points.push(new PIXI.Point(i * length, 0));};strip = new PIXI.Rope(PIXI.Texture.fromImage("http://www.goodboydigital.com/pixijs/examples/snake/snake.png"), points);strip.x = -918/2;var snakeContainer = new PIXI.DisplayObjectContainer();snakeContainer.position.x = window.innerWidth/2;snakeContainer.position.y = window.innerHeight/2;snakeContainer.scale.set( window.innerWidth / 1100);stage.addChild(snakeContainer);snakeContainer.addChild(strip);requestAnimFrame(animate);function animate() {count += 0.1;var length = 918 / 20;for (var i = 0; i < points.length; i++) {points[i].y = Math.sin(i *0.5  + count) * 30;points[i].x = i * length + Math.cos(i *0.3  + count) * 20;};    renderer.render(stage);    requestAnimFrame(animate);}</script></body></html>
+<html>
+	<head>
+		<title>pixi.js example 2 loading a sprite sheet</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: transparent;
+			}
+		</style>
+		<script src="scripts/pixi.js"></script>
+	</head>
+	<body>		
+		<script>
+			var innerWidth = window.innerWidth,
+				innerHeight = window.innerHeight;
+
+			console.log("innerWidth: "+innerWidth);
+			console.log("innerHeight: "+innerHeight);
+
+			var tabs = [];
+
+			var resources = PIXI.loader.resources;
+
+			var scaleX = 1.0/*innerWidth/320*/, scaleY = 1.0/*innerHeight/480*/;
+
+			console.log("scale: "+scaleX+" , "+scaleY);
+
+			var stage = new PIXI.Container();
+			stage.position = new PIXI.Point(0,0);
+			stage.width = innerWidth;
+			stage.height = innerHeight;
+			//stage.anchor = new PIXI.Point(0.5,0.5);
+			stage.scale = new PIXI.Point(scaleX,scaleY);
+			
+			var options = {transparent:true};
+
+			var renderer = PIXI.autoDetectRenderer(innerWidth, innerHeight,options,true);
+
+			document.body.appendChild(renderer.view);
+
+			var loader = PIXI.loader
+				.add('buttonSlice','images/buttonSlice.png')
+				.add('popUpSlice','images/popUpSlice.png')
+				.load( function (loader, resources) {
+				})
+				.once('complete',onAssetsLoaded);
+
+			function onAssetsLoaded() {
+				//Left Containers			
+				var TopLeftContainer = new PIXI.Container();
+				TopLeftContainer.position = new PIXI.Point(0,0);
+				TopLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(TopLeftContainer);
+
+				var MiddleLeftContainer = new PIXI.Container();
+				MiddleLeftContainer.position = new PIXI.Point(0,innerHeight/(2*scaleY));
+				MiddleLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(MiddleLeftContainer);
+
+				var BottomLeftContainer = new PIXI.Container();
+				BottomLeftContainer.position = new PIXI.Point(0,innerHeight);
+				BottomLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(BottomLeftContainer);
+
+				//Center Containers
+				var TopCenterContainer = new PIXI.Container();
+				TopCenterContainer.position = new PIXI.Point(innerWidth/(2*scaleX),0);
+				TopCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(TopCenterContainer);
+
+				var MiddleCenterContainer = new PIXI.Container();
+				MiddleCenterContainer.position = new PIXI.Point(innerWidth/(2*scaleX),innerHeight/(2*scaleY));
+				MiddleCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(MiddleCenterContainer);
+
+				var BottomCenterContainer = new PIXI.Container();
+				BottomCenterContainer.position = new PIXI.Point(innerWidth/(2*scaleX),innerHeight);
+				BottomCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(BottomCenterContainer);
+
+				//Right Containers
+				var TopRightContainer = new PIXI.Container();
+				TopRightContainer.position = new PIXI.Point(innerWidth,0);
+				TopRightContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(TopRightContainer);
+
+				var MiddleRightContainer = new PIXI.Container();
+				MiddleRightContainer.position = new PIXI.Point(innerWidth,innerHeight/(2*scaleY));
+				MiddleRightContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(MiddleRightContainer);
+
+				var BottomRightContainer = new PIXI.Container();
+				BottomRightContainer.position = new PIXI.Point(innerWidth,innerHeight);
+				BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
+				stage.addChild(BottomRightContainer);
+
+				var missionTab1 = CreateEventTab( 1, new PIXI.Point(24,-170) );
+				MiddleLeftContainer.addChild(missionTab1);
+
+				var missionTab2 = CreateEventTab( 2, new PIXI.Point(24,-60) );
+				MiddleLeftContainer.addChild(missionTab2);
+
+				var missionTab3 = CreateEventTab( 3, new PIXI.Point(24,60) );
+				MiddleLeftContainer.addChild(missionTab3);
+
+				var missionTab4 = CreateEventTab( 4, new PIXI.Point(24,170) );
+				MiddleLeftContainer.addChild(missionTab4);
+
+				renderer.render(stage); 	
+			}
+
+			function CreateEventTab ( index , tabPosition ) {
+				var EventTabContainer = new PIXI.Container();
+				EventTabContainer.position = new PIXI.Point(0,0);
+				EventTabContainer.anchor = new PIXI.Point(0.5,0.5);
+				EventTabContainer.index = index;
+				tabs.push(EventTabContainer);
+
+				var background = new PIXI.Sprite( resources.popUpSlice.texture);
+				background.anchor = new PIXI.Point(0.5,0.5);
+				background.tint = 0x462E27;
+				background.width = 468;
+				background.height = 456;
+				background.position = new PIXI.Point(-237,0);
+				EventTabContainer.addChild(background);
+
+				var TabContainer = new PIXI.Container();
+				TabContainer.anchor = new PIXI.Point(0.5,0.5);
+				TabContainer.width = 120;
+				TabContainer.height = 100;
+				TabContainer.position = tabPosition;
+				TabContainer.interactive = true;
+				TabContainer.on('mousedown', openCloseContainer );
+				TabContainer.on('touchstart', openCloseContainer );
+				EventTabContainer.addChild(TabContainer);
+
+				var TabImage = new PIXI.Sprite( resources.popUpSlice.texture);
+				TabImage.anchor = new PIXI.Point(0.5,0.5);
+				TabImage.scale = new PIXI.Point(0.7,0.7);
+				TabImage.tint = 0x9C551F;
+				TabImage.width = 150;
+				TabImage.height = 80;
+				TabImage.position = new PIXI.Point(0,0);;
+				TabContainer.addChild(TabImage);
+
+				var timer = new PIXI.Sprite( resources.popUpSlice.texture);
+				timer.anchor = new PIXI.Point(0.5,0.5);
+				timer.scale = new PIXI.Point(0.7,0.7);
+				timer.tint = 0x9C551F;
+				timer.width = 250;
+				timer.height = 90;
+				timer.position = new PIXI.Point(15,150);
+				TabImage.addChild(timer);
+
+				var backgroundTimer = new PIXI.Sprite( resources.popUpSlice.texture);
+				backgroundTimer.anchor = new PIXI.Point(0.5,0.5);
+				backgroundTimer.tint = 0xD1B986;
+				backgroundTimer.width = 240;
+				backgroundTimer.height = 160;
+				backgroundTimer.position = new PIXI.Point(-5,0);
+				timer.addChild(backgroundTimer);
+
+				var text = new PIXI.Text('01m 02s',{font : '60px Arial', fill : 0x523722, align : 'center'});
+				text.width = 300;
+				text.height = 200;
+				text.position = new PIXI.Point(-60,-20);
+				text.pivot = new PIXI.Point(0.5,0.5);
+				backgroundTimer.addChild( text );
+
+				return EventTabContainer;
+			}
+
+			function openCloseContainer (eventData) {
+				for( var i=0; i<tabs.length ; i++ ) {
+					if( tabs[i].index == this.parent.index ) {
+						if( tabs[i].x == 0 ) {
+							tabs[i].position.set(200,0);
+						}
+						else {
+							tabs[i].position.set(0,0);
+						}	
+						renderer.render(stage); 		
+						break;
+					}
+				}
+			}
+
+			function objToString (obj) {
+    			var str = '';
+    			for (var p in obj) {
+        			if (obj.hasOwnProperty(p)) {
+            			str += p + '::' + obj[p] + '\n';
+        			}
+    			}
+    			return str;
+			}
+
+		</script>
+	</body>
+</html>
