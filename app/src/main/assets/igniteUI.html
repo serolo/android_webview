@@ -109,148 +109,46 @@
 				BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
 				stage.addChild(BottomRightContainer);
 				
-				var missionTab1 = CreateEventTab( 1, new PIXI.Point(40,-210),1 );
-				MiddleLeftContainer.addChild(missionTab1);
+				var missionTab1 = new TabUIController( 1 , TabPosition.one , TabType.mission , OpenCloseTabCallback );
+				MiddleLeftContainer.addChild( missionTab1.CreateUI() );
+				tabs.push(missionTab1);
 
-				var missionTab2 = CreateEventTab( 2, new PIXI.Point(40,-80),1 );
-				MiddleLeftContainer.addChild(missionTab2);
+				var missionTab2 = new TabUIController( 2 , TabPosition.two , TabType.mission , OpenCloseTabCallback );
+				MiddleLeftContainer.addChild( missionTab2.CreateUI() );
+				tabs.push(missionTab2);
 
-				var missionTab3 = CreateEventTab( 3, new PIXI.Point(40,50),1 );
-				MiddleLeftContainer.addChild(missionTab3);
+				var missionTab3 = new TabUIController( 3 , TabPosition.three , TabType.mission , OpenCloseTabCallback );
+				MiddleLeftContainer.addChild( missionTab3.CreateUI() );
+				tabs.push(missionTab3);
 
-				var missionTab4 = CreateEventTab( 4, new PIXI.Point(40,180),1 );
-				MiddleLeftContainer.addChild(missionTab4);
+				var missionTab4 = new TabUIController( 4 , TabPosition.four , TabType.mission , OpenCloseTabCallback );
+				MiddleLeftContainer.addChild( missionTab4.CreateUI() );
+				tabs.push(missionTab4);
 				
-				var leaderBoardTab1 = CreateEventTab( 5, new PIXI.Point(-40,-210),2 );
-				MiddleRightContainer.addChild(leaderBoardTab1);
+				var leaderBoardTab1 = new TabUIController( 5 , TabPosition.one , TabType.leaderBoard , OpenCloseTabCallback );
+				MiddleRightContainer.addChild( leaderBoardTab1.CreateUI() );
+				tabs.push(leaderBoardTab1);
 
-				var leaderBoardTab2 = CreateEventTab( 6, new PIXI.Point(-40,-80),2 );
-				MiddleRightContainer.addChild(leaderBoardTab2);
+				var leaderBoardTab2 = new TabUIController( 6 , TabPosition.two , TabType.leaderBoard , OpenCloseTabCallback );
+				MiddleRightContainer.addChild( leaderBoardTab2.CreateUI() );
+				tabs.push(leaderBoardTab2);
 
-				var leaderBoardTab3 = CreateEventTab( 7, new PIXI.Point(-40,50),2 );
-				MiddleRightContainer.addChild(leaderBoardTab3);
+				var leaderBoardTab3 = new TabUIController( 7 , TabPosition.three , TabType.leaderBoard , OpenCloseTabCallback );
+				MiddleRightContainer.addChild( leaderBoardTab3.CreateUI() );
+				tabs.push(leaderBoardTab3);
 				
-				var leaderBoardTab4 = CreateEventTab( 8, new PIXI.Point(-40,180),2 );
-				MiddleRightContainer.addChild(leaderBoardTab4);
+				var leaderBoardTab4 = new TabUIController( 8 , TabPosition.four , TabType.leaderBoard , OpenCloseTabCallback );
+				MiddleRightContainer.addChild( leaderBoardTab4.CreateUI() );
+				tabs.push(leaderBoardTab4);
 
 				renderer.render(stage); 	
-				//resize();
+				
 			}
 
-			function CreateEventTab ( index , tabPosition, type ) {
-				var EventTabContainer = new PIXI.Container();
-				EventTabContainer.position = new PIXI.Point(0,0);
-				EventTabContainer.anchor = new PIXI.Point(0.5,0.5);
-				EventTabContainer.index = index;
-				EventTabContainer.type = type;
-				tabs.push(EventTabContainer);
-
-				var background = new PIXI.Graphics();
-				background.beginFill(0x462E27, 1);
-				if( type == 1 ) {
-					background.drawRoundedRect(-468, -300, 468, 600, 20);
-				}
-				else {
-					background.drawRoundedRect(0, -300, 468, 600, 20);	
-				}
-				background.endFill();
-				EventTabContainer.addChild( background );
-
-				var TabContainer = new PIXI.Container();
-				if( type == 1 ) {
-					TabContainer.anchor = new PIXI.Point(1,0.5);
-				}
-				else {
-					TabContainer.anchor = new PIXI.Point(0,0.5);
-				}
-				TabContainer.position = tabPosition;
-				TabContainer.interactive = true;
-				TabContainer.on('mousedown', openCloseContainer );
-				TabContainer.on('touchstart', openCloseContainer );
-				EventTabContainer.addChild(TabContainer);
-
-				var TabImage = new PIXI.Graphics();
-				TabImage.position = new PIXI.Point(-60,-40);
-				TabImage.anchor = new PIXI.Point(0.5,0.5);
-				TabImage.beginFill(0x9C551F, 1);
-				TabImage.drawRoundedRect(0, 0, 120, 90, 20);
-				TabImage.endFill();
-				TabContainer.addChild(TabImage);
-
-				var timer = new PIXI.Graphics();
-				timer.anchor = new PIXI.Point(0.5,0.5);
-				if( type == 1 ) {
-					timer.position = new PIXI.Point(10,89);
-				}
-				else {
-					timer.position = new PIXI.Point(-10,89);	
-				}
-				timer.beginFill(0x462E27, 1);
-				if( type == 1 ) {
-					timer.drawRoundedRect(4, 4, 120, 30, 10);
-				}
-				else {
-					timer.drawRoundedRect(-4, 4, 120, 30, 10);	
-				}
-				timer.endFill();
-				timer.beginFill(0x9C551F, 1);
-				timer.drawRoundedRect(0, 0, 120, 30, 10);
-				timer.endFill();
-				TabImage.addChild(timer);
-
-				var backgroundTimer = new PIXI.Graphics();
-				backgroundTimer.anchor = new PIXI.Point(0.5,0.5);
-				/*
-				backgroundTimer.tint = 0xD1B986;
-				backgroundTimer.width = 240;
-				backgroundTimer.height = 160;
-				*/
-				if( type == 1 ) {
-					backgroundTimer.position = new PIXI.Point(-3,3);
-				}
-				else {
-					backgroundTimer.position = new PIXI.Point(3,3);	
-				}
-				backgroundTimer.beginFill(0xD1B986, 1);
-				backgroundTimer.drawRoundedRect(0, 0, 120, 24, 10);
-				backgroundTimer.endFill();
-				timer.addChild(backgroundTimer);
-
-				var text = new PIXI.Text('01m 02s',{font : 'bold 18px Arial', fill : 0x523722, align : 'center'});
-				text.pivot = new PIXI.Point(0.5,0.5);
-				text.position = new PIXI.Point(25,3);
-				backgroundTimer.addChild( text );
-
-				if( type == 1 ) {
-					var controller = new MissionUIController();
-					EventTabContainer.addChild( controller.CreateUI() );
-				}
-
-				return EventTabContainer;
-			}
-
-			function openCloseContainer (eventData) {
-				var open = false;
+			function OpenCloseTabCallback(index,open) {
 				for( var i=0; i<tabs.length ; i++ ) {
-					if( tabs[i].index == this.parent.index ) {
-						if( tabs[i].x == 0 ) {
-							open = true;
-							if( tabs[i].type == 1 ) {
-								tabs[i].position.set(400,0);
-							}
-							else {
-								tabs[i].position.set(-400,0);
-							}
-						}
-						else {
-							tabs[i].position.set(0,0);
-						}	 		
-						break;
-					}
-				}
-				for( var i=0; i<tabs.length ; i++ ) {
-					if( tabs[i].index != this.parent.index ) {
-						tabs[i].visible = !open;
+					if( tabs[i].index != index ) {
+						tabs[i].container.visible = !open;
 					}
 				}
 				renderer.render(stage);
