@@ -1,0 +1,174 @@
+var event_Json = [
+	{
+		"eventId":"568edabcdf5d07359a000016",
+		"score":-1,
+		"id":"568edabbdf5d07359a000013",
+		"authorized":true,
+		"joined":true,
+		"state":"active",
+		"endTime":1452210252,
+		"startTime":1452203052,
+		"metadata": {
+			"name":"hde",
+			"imageUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/397bd0ac6d3c5d7ffc5a1c6634d30db3_default.png",
+			"gamedata":"{}"
+		},
+		"type":0
+	},
+	{
+		"eventId":"568d96bddf5d070498000012",
+		"score":-1,
+		"id":"568d96bcdf5d07049800000f",
+		"authorized":true,
+		"joined":true,
+		"state":"finished",
+		"endTime":1452123647,
+		"startTime":1452120047,
+		"metadata": {
+			"name":"fwa\\fffgg",
+			"imageUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/e4234472afb925ddb203ad99cb2ec0b0_default.gif",
+			"gamedata":"{}"
+		},
+		"type":0
+	},
+	{
+		"eventId":"568d96a6df5d0704a8000010",
+		"score":-1,
+		"id":"568d96a6df5d0704a800000f",
+		"authorized":true,
+		"joined":true,
+		"state":"finished",
+		"endTime":1452127224,
+		"startTime":1452120024,
+		"metadata":{
+			"name":"hirqafre\\f",
+			"imageUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/e4234472afb925ddb203ad99cb2ec0b0_default.gif",
+			"gamedata":"{}"
+		},
+		"type":1
+	}
+];
+
+var mission1_Json = {
+	"metadata":{
+		"name":"Step",
+		"virtualGood":{
+			"goodId":"3",
+			"id":"562ebe51da85d15809000004",
+			"iconUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/f6b931d09b92adc46e43a74cab9c804d_default.png",
+			"description":"1 coin"
+		},
+		"gamedata":"{}"
+	},
+	"id":"568d96a6df5d0704a800000f",
+	"progress":-1,
+	"rules":[
+		{
+			"kind":0,
+			"achieved":false,
+			"score":0,
+			"metadata":{
+				"name":"Collect",
+				"gamedata":"{}"
+			},
+			"id":"568d96a6df5d0704a800000d",
+			"target":50,
+			"variable":"score"
+		},
+		{
+			"kind":0,
+			"achieved":false,
+			"score":0,
+			"metadata":{
+				"name":"Stepping more",
+				"gamedata":"{}"
+			},
+			"id":"568d96a6df5d0704a800000e",
+			"target":100,
+			"variable":"score"
+		}
+	]
+};
+
+var leaderBoard1_Json = {
+	"currentUserId":"5602da356775610a6d100000",
+	"leaderList":{
+		"state":"active",
+		"leaders":[]
+	},
+	"metadata":{
+		"participationVirtualGood":"",
+		"name":"smap",
+		"gamedata":"",
+		"virtualGoods":[
+			{
+				"iconUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/f6b931d09b92adc46e43a74cab9c804d_default.png",
+				"description":"5 coins",
+				"goodId":"1",
+				"id":"5609e5096775616950030000",
+				"cap":10,
+				"ratio":0.01
+			},
+			{
+				"iconUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/f6b931d09b92adc46e43a74cab9c804d_default.png",
+				"description":"1 coin",
+				"goodId":"3",
+				"id":"562ebe51da85d15809000004",
+				"cap":10,
+				"ratio":0.25
+			}
+		]
+	},
+	"rule":{
+		"kind":0,
+		"id":"568edabbdf5d07359a000012",
+		"score":0,
+		"variable":"score"
+	},
+	"id":"568edabbdf5d07359a000013",
+	"progress":-1
+};
+
+var leaderBoard2_Json = {
+	"currentUserId":"5602da356775610a6d100000",
+	"leaderList":{
+		"state":"finished",
+		"leaders":[]
+	},
+	"metadata":{
+		"participationVirtualGood":{
+			"goodId":"3",
+			"id":"562ebe51da85d15809000004",
+			"iconUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/f6b931d09b92adc46e43a74cab9c804d_default.png",
+			"description":"1 coin"
+		},
+		"name":"hi",
+		"gamedata":"",
+		"virtualGoods":[
+			{
+				"iconUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/f6b931d09b92adc46e43a74cab9c804d_default.png",
+				"description":"15 coins",
+				"goodId":"2",
+				"id":"56219a27da85d13f9c000004",
+				"cap":1,
+				"ratio":0.1
+			},
+			{
+				"iconUrl":"\/\/cdn-sandbox.fuelpowered.com\/images\/f6b931d09b92adc46e43a74cab9c804d_default.png",
+				"description":"5 coins",
+				"goodId":"1",
+				"id":"5609e5096775616950030000",
+				"cap":5,
+				"ratio":0.05
+			}
+		]
+	},
+	"rule":{
+		"kind":0,
+		"id":"568d96bcdf5d07049800000e",
+		"score":0,
+		"variable":"score"
+	},
+	"id":"568d96bcdf5d07049800000f",
+	"progress":-1
+};

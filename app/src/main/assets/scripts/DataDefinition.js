@@ -110,7 +110,7 @@ var EventMetadata = function() {
     this.gameData = null;
 };
 
-Event.prototype.buildFromJSON = function(json) {
+EventMetadata.prototype.buildFromJSON = function(json) {
     if (json.name) {
     	this.name = json.name;
     }
@@ -152,7 +152,7 @@ LeaderBoard.prototype.buildFromJSON = function(json) {
     if (json.rule) {	
     	this.rule.buildFromJSON( json.rule );
     }
-    if (json,metadata) {
+    if (json.metadata) {
     	this.metadata.buildFromJSON( json.metadata );
     }
 };
@@ -226,7 +226,7 @@ Mission.prototype.buildFromJSON = function(json) {
     if (json.metadata) {
     	this.metadata.buildFromJSON( json.metadata );
     }
-    if (json.rules && this.rules.length > 0) {
+    if (json.rules && json.rules.length > 0) {
 		this.rules = [];
 	    for (var i=0; i<json.rules.length; i++) {
 	        var missionRule = new MissionRule();

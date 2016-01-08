@@ -1,3 +1,5 @@
+var MAX_TABS_PER_SIDE = 4;
+
 var eventsHashTable = new HashTable();
 var leaderBoardsHashTable = new HashTable();
 var missionsHashTable = new HashTable();
@@ -5,10 +7,16 @@ var missionsHashTable = new HashTable();
 var leaderBoardsUIHashTable = new HashTable();
 var missionsUIHashTable = new HashTable();
 
+var countLeftInitializated = 0;
+var countRightInitializated = 0;
+
 var InitEvents  = function( eventsJson ) {
-	for( var i=0 ; eventsJson.length ; i++ ) {
+	for( var i=0 ; i<eventsJson.length ; i++ ) {
+
 		var eventData = new Event();
+		//console.log("InitLeaderBoard ------ leaderBoardJson: "+eventData.buildFromJSON );	
 		eventData.buildFromJSON( eventsJson[i] );
+		console.log("eventData id "+eventData.id );
 		eventsHashTable.insert( eventData.id , eventData);
 	}
 }
@@ -17,19 +25,74 @@ var InitLeaderBoard  = function( leaderBoardJson ) {
 	var leaderBoardData = new LeaderBoard();
 	leaderBoardData.buildFromJSON( leaderBoardJson );
 	leaderBoardsHashTable.insert( leaderBoardData.id , leaderBoardData );
-	var leaderBoardUI = leaderBoardsUIHashTable.retrieve();
-	if( leaderBoardUI == null ) {
 
+	eventData = eventsHashTable.retrieve( leaderBoardData.id );
+	if( eventData == null ) {
+		console.error("InitLeaderBoard ------ Event Data is null for the leaderBoard id = "+leaderBoardData.id );
+		return null;
+	}
+
+	var leaderBoardUI = leaderBoardsUIHashTable.retrieve( leaderBoardData.id );
+	if( leaderBoardUI == null ) {
+		if( countRightInitializated < MAX_TABS_PER_SIDE ) {
+			//Create the tab
+			var tab = new TabUIController( countLeftInitializated+countRightInitializated , countRightInitializated , TabType.leaderBoard , OpenCloseTabCallback );
+			tab.Init( eventData );
+			MiddleRightContainer.addChild( tab.CreateUI() );
+			tabs.push(tab);
+			
+			//Create the LeaderBoard
+			var controller = new LeaderBoardUIController();
+			controller.Init(eventData,leaderBoardData);
+			controller.tab = tab;
+			tab.container.addChild( controller.CreateUI() );
+
+			countRightInitializated++;
+		}
 	}
 	else {
-
+		leaderBoardUI.tab.Init( eventData );
+		leaderBoardUI.Init(eventData,leaderBoardData);
 	}
+
+	renderer.render(stage);
 }
 
-var InitMissions  = function( missionsJson ) {
+var InitMission  = function( missionsJson ) {
 	var missionData = new Mission();
 	missionData.buildFromJSON( missionsJson );
 	missionsHashTable.insert( missionData.id , missionData );
+
+	eventData = eventsHashTable.retrieve( missionData.id );
+	if( eventData == null ) {
+		console.error("InitMissions ------ Event Data is null for the mission id = "+missionData.id );
+		return null;
+	}
+
+	var missionUI = missionsUIHashTable.retrieve( missionData.id );
+	if( missionUI == null ) {
+		if( countLeftInitializated < MAX_TABS_PER_SIDE ) {
+			//Create the tab
+			var tab = new TabUIController( countLeftInitializated+countRightInitializated , countLeftInitializated , TabType.mission , OpenCloseTabCallback );
+			tab.Init( eventData );
+			MiddleLeftContainer.addChild( tab.CreateUI() );
+			tabs.push(tab);
+			
+			//Create the LeaderBoard
+			var controller = new MissionUIController();
+			controller.Init(eventData,missionData);
+			controller.tab = tab;
+			tab.container.addChild( controller.CreateUI() );
+
+			countLeftInitializated++;
+		}
+	}
+	else {
+		missionUI.tab.Init( eventData );
+		missionUI.Init(eventData,leaderBoardData);
+	}
+
+	renderer.render(stage);
 }
 
 var TabType = {
@@ -85,7 +148,6 @@ TabUIController.prototype.CreateUI = function() {
 	else {
 		background.drawRoundedRect(0, -300, 468, 600, 20);	
 	}
-	//background.drawRoundedRect(0, 0, 468, 600, 20);	
 	background.endFill();
 	this.container.addChild( background );
 
@@ -164,15 +226,6 @@ TabUIController.prototype.CreateUI = function() {
 	text.pivot = new PIXI.Point(0.5,0.5);
 	text.position = new PIXI.Point(25,3);
 	backgroundTimer.addChild( text );
-
-	if( this.type == TabType.mission ) {
-		var controller = new MissionUIController();
-		this.container.addChild( controller.CreateUI() );
-	}
-	else {
-		var controller = new LeaderBoardUIController();
-		this.container.addChild( controller.CreateUI() );	
-	}
 	
 	return this.container;
 }
@@ -197,7 +250,9 @@ TabUIController.prototype.OpenCloseContainer = function (eventData) {
 
 //============================== MISSION UI CONTROLLER ==============================
 
-var MissionUIController = function() {
+var MissionUIController = function( ) {
+	//tab reference
+	this.tab = null;
 	//Containers
 	this.container = null;
 	this.titleObject = null;
@@ -233,6 +288,7 @@ MissionUIController.prototype.Update = function() {
 MissionUIController.prototype.Init = function( eventData , missionData ) {
 	this.localEventData = eventData;
 	this.localMissionData = missionData;
+	this.init = true;
 }
 
 MissionUIController.prototype.CreateUI = function() {
@@ -251,12 +307,12 @@ MissionUIController.prototype.CreateUI = function() {
 	this.titleObject.position = new PIXI.Point(-15,10);
 	this.container.addChild( this.titleObject );
 
-	this.eventNameText = new PIXI.Text('Peg Leg Monday Event!',{font : 'bold 20px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 240});
+	this.eventNameText = new PIXI.Text(this.localEventData.metadata.name,{font : 'bold 20px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 240});
 	this.eventNameText.pivot = new PIXI.Point(0.5,0.5);
 	this.eventNameText.position = new PIXI.Point(150,10);
 	this.titleObject.addChild( this.eventNameText );
 
-	this.eventDescText = new PIXI.Text('Complete all three missions to win the grand prize!',{font : '16px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 220});
+	this.eventDescText = new PIXI.Text(this.localMissionData.metadata.name,{font : '16px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 220});
 	this.eventDescText.pivot = new PIXI.Point(0.5,0.5);
 	this.eventDescText.position = new PIXI.Point(150,40);
 	this.titleObject.addChild( this.eventDescText );
@@ -303,6 +359,8 @@ MissionUIController.prototype.UpdateUI = function() {
 //============================== LEADERBOARD UI CONTROLLER ==============================
 
 var LeaderBoardUIController = function() {
+	//tab reference
+	this.tab = null;
 	//Containers
 	this.container = null;
 	this.titleObject = null;
@@ -356,12 +414,12 @@ LeaderBoardUIController.prototype.CreateUI = function() {
 	this.titleObject.position = new PIXI.Point(15,10);
 	this.container.addChild( this.titleObject );
 
-	this.eventNameText = new PIXI.Text('Test LeaderBoard',{font : 'bold 20px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 300});
+	this.eventNameText = new PIXI.Text(this.localEventData.metadata.name,{font : 'bold 20px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 300});
 	this.eventNameText.pivot = new PIXI.Point(0.5,0.5);
 	this.eventNameText.position = new PIXI.Point(100,10);
 	this.titleObject.addChild( this.eventNameText );
 
-	this.eventDescText = new PIXI.Text('Collect the most treasure to win!',{font : '16px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 300});
+	this.eventDescText = new PIXI.Text(this.localLeaderBoardData.metadata.name,{font : '16px Arial', fill : 0x321B0C, align : 'center', wordWrap : true,wordWrapWidth : 300});
 	this.eventDescText.pivot = new PIXI.Point(0.5,0.5);
 	this.eventDescText.position = new PIXI.Point(100,40);
 	this.titleObject.addChild( this.eventDescText );
