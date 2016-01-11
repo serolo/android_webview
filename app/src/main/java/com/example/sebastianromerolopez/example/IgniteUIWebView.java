@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -40,6 +41,8 @@ public class IgniteUIWebView extends WebView {
      * Initializes the WebView.
      */
     private void initialize(Context context) {
+
+        this.addJavascriptInterface( this , "fuelUI_host");
 
         setClickable(true);
         setFocusable(true);
@@ -154,11 +157,16 @@ public class IgniteUIWebView extends WebView {
         }
 
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            Rect rect = new Rect(0,0,100,getHeight());
+            Rect rect1 = new Rect(0,0,100,getHeight());
+            Rect rect2 = new Rect(getWidth()-100,0,getWidth(),getHeight());
 
-            if( rect.contains((int)event.getX(), (int)event.getY()) ) {
+            if( rect1.contains((int)event.getX(), (int)event.getY()) ) {
                 isInSideClicked = true;
             }
+            else if( rect2.contains((int)event.getX(), (int)event.getY()) ) {
+                isInSideClicked = true;
+            }
+
             if(isInSideClicked){
                 return super.dispatchTouchEvent(event);
             }else{
@@ -173,5 +181,11 @@ public class IgniteUIWebView extends WebView {
             isInSideClicked = false;
             return false;
         }
+    }
+
+    @JavascriptInterface
+    public void OpenCloseTabCallback(boolean open) {
+        Log.e("FuelIgniteUI", "OpenCloseTabCallback open = " + open);
+        oneTabOpen = open;
     }
 }
