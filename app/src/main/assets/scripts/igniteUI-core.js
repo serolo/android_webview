@@ -227,6 +227,18 @@ TabUIController.prototype.CreateUI = function() {
 	text.position = new PIXI.Point(25,3);
 	backgroundTimer.addChild( text );
 	
+	var worldPosition = stage.toLocal(TabContainer.position);
+	var positionY = stage.toGlobal(TabContainer.position).y-TabContainer.height*ratio/2
+
+	if( fuelUI_host != null ){
+		if( this.type == TabType.mission ) {
+			fuelUI_host.CreateMissionTab(this.tabPosition, 0, positionY, TabContainer.width*ratio, positionY+TabContainer.height*ratio+timer.height*ratio);
+		}
+		else {
+			fuelUI_host.CreateLeaderBoardTab(this.tabPosition,innerWidth-TabContainer.width*ratio,positionY,innerWidth,positionY+TabContainer.height*ratio+timer.height*ratio);
+		}
+	}
+
 	return this.container;
 }
 

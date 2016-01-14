@@ -23,7 +23,7 @@ import android.widget.RelativeLayout;
  */
 public class IgniteUILoyout extends RelativeLayout {
 
-    private WebView webView;
+    private IgniteUIWebView webView;
 
     /***************************************************************************
      * Constructs
@@ -53,7 +53,7 @@ public class IgniteUILoyout extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        Log.e("IgniteUIWebView", "onTouchEvent");
+        Log.e("IgniteUILoyout", "onTouchEvent");
         return super.onTouchEvent(ev);
     }
 

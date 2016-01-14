@@ -2,7 +2,9 @@ package com.example.sebastianromerolopez.example;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.Log;
@@ -24,8 +26,29 @@ import android.widget.RelativeLayout;
  */
 public class IgniteUIWebView extends WebView {
 
+    public enum Orientation {
+        landscape,
+        portrait
+    };
+
+    private Orientation localOrientation = Orientation.portrait;
+
     private boolean oneTabOpen = false;
     private boolean isInSideClicked = false;
+
+    private float localRatio = 1;
+
+    private int webViewWidth = 0;
+    private int webViewHeight = 0;
+    private float webViewRatio = 1;
+
+    private int missionTabsCount = 0;
+    private int leaderBoardTabsCount = 0;
+
+    Paint paint = new Paint();
+
+    private Rect[] missionTabPositions = new Rect[4];
+    private Rect[] leaderBoardTabPositions = new Rect[4];
 
     /***************************************************************************
      * Constructs a new WebView with a Context object.
@@ -42,7 +65,7 @@ public class IgniteUIWebView extends WebView {
      */
     private void initialize(Context context) {
 
-        this.addJavascriptInterface( this , "fuelUI_host");
+        this.addJavascriptInterface(this, "fuelUI_host");
 
         setClickable(true);
         setFocusable(true);
@@ -66,6 +89,36 @@ public class IgniteUIWebView extends WebView {
 
         initializeWebSettings();
         //initializeCookieSettings();
+
+
+
+        //missionTabPositions[0] = new Rect(0,getHeight()/2-300,150,getHeight()/2-150);
+
+    }
+
+    @Override
+    public void onSizeChanged(int w, int h, int ow, int oh) {
+        super.onSizeChanged(w, h, ow, oh);
+        Log.e("FuelIgniteUI", "onSizeChanged w = " + w + " - h = " + h);
+    }
+
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+/*
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(3);
+
+        for( int i=0 ; i<missionTabsCount ; i++ ) {
+            canvas.drawRect( missionTabPositions[i], paint );
+        }
+
+        for( int i=0 ; i<leaderBoardTabsCount ; i++ ) {
+            canvas.drawRect( leaderBoardTabPositions[i], paint );
+        }
+        */
+
     }
 
     /***************************************************************************
@@ -152,19 +205,24 @@ public class IgniteUIWebView extends WebView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if( oneTabOpen ) {
+        Log.e("IgniteUIWebView", "onTouchEvent");
+        //if( oneTabOpen ) {
             return super.dispatchTouchEvent(event);
-        }
-
+        //}
+/*
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            Rect rect1 = new Rect(0,0,100,getHeight());
-            Rect rect2 = new Rect(getWidth()-100,0,getWidth(),getHeight());
+            int xTouch = (int)event.getX(), yTouch = (int)event.getY();
 
-            if( rect1.contains((int)event.getX(), (int)event.getY()) ) {
-                isInSideClicked = true;
+            for( int i=0 ; i<missionTabsCount ; i++ ) {
+                if( missionTabPositions[i].contains(xTouch, yTouch) ) {
+                    isInSideClicked = true;
+                }
             }
-            else if( rect2.contains((int)event.getX(), (int)event.getY()) ) {
-                isInSideClicked = true;
+
+            for( int i=0 ; i<leaderBoardTabsCount ; i++ ) {
+                if( leaderBoardTabPositions[i].contains(xTouch, yTouch) ) {
+                    isInSideClicked = true;
+                }
             }
 
             if(isInSideClicked){
@@ -181,11 +239,51 @@ public class IgniteUIWebView extends WebView {
             isInSideClicked = false;
             return false;
         }
+        */
+    }
+
+    @JavascriptInterface
+    public void SetWebViewSize(int width, int height, float ratio ) {
+        Log.e("FuelIgniteUI", "SetWebViewSize width: " + width + " - height: "+height+" - ratio: "+ratio);
+        webViewWidth = width;
+        webViewHeight = height;
+        webViewRatio = ratio;
+
+        if( localOrientation == Orientation.landscape ) {
+            localRatio = (float)getHeight()/(float)height;
+        }
+        else {
+            localRatio = (float)getWidth()/(float)width;
+        }
+        Log.e("FuelIgniteUI", "SetWebViewSize localRatio: " + localRatio );
+
     }
 
     @JavascriptInterface
     public void OpenCloseTabCallback(boolean open) {
         Log.e("FuelIgniteUI", "OpenCloseTabCallback open = " + open);
         oneTabOpen = open;
+    }
+
+    @JavascriptInterface
+    public void CreateMissionTab( int tabPosition, float left, float top, float right , float bottom ) {
+        Log.e("IgniteUIWebView", "CreateMissionTab tabPosition:"+tabPosition);
+        Log.e("IgniteUIWebView", "CreateMissionTab left:"+left);
+        Log.e("IgniteUIWebView", "CreateMissionTab top:"+top);
+        Log.e("IgniteUIWebView", "CreateMissionTab right:"+right);
+        Log.e("IgniteUIWebView", "CreateMissionTab bottom:"+bottom);
+        missionTabPositions[tabPosition] = new Rect((int)(left*localRatio), (int)(top*localRatio), (int)(right*localRatio),(int)(bottom*localRatio));
+        missionTabsCount++;
+    }
+
+    @JavascriptInterface
+    public void CreateLeaderBoardTab( int tabPosition, float left, float top, float right , float bottom ) {
+        Log.e("IgniteUIWebView", "CreateLeaderBoardTab tabPosition:"+tabPosition);
+        Log.e("IgniteUIWebView", "CreateLeaderBoardTab left:"+left);
+        Log.e("IgniteUIWebView", "CreateLeaderBoardTab top:"+top);
+        Log.e("IgniteUIWebView", "CreateLeaderBoardTab right:"+right);
+        Log.e("IgniteUIWebView", "CreateLeaderBoardTab bottom:"+bottom);
+        leaderBoardTabPositions[tabPosition] = new Rect((int)(left*localRatio), (int)(top*localRatio), (int)(right*localRatio),(int)(bottom*localRatio));
+        leaderBoardTabsCount++;
     }
 }

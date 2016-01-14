@@ -1,7 +1,11 @@
 <html>
 	<head>
 		<title>pixi.js example 2 loading a sprite sheet</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 		<style>
+			canvas {
+				-webkit-tap-highlight-color: transparent;
+			}
 			body {
 				margin: 0;
 				padding: 0;
@@ -16,12 +20,10 @@
 	</head>
 	<body>		
 		<script> 
-			//window.addEventListener('resize', resize, false);
+			var fuelUI_host;
+
 			var innerWidth = window.innerWidth,
 				innerHeight = window.innerHeight;
-
-			console.log("innerWidth: "+innerWidth);
-			console.log("innerHeight: "+innerHeight);
 
 			var tabs = [];
 
@@ -39,6 +41,10 @@
             console.log("innerWidth: "+innerWidth);
 			console.log("innerHeight: "+innerHeight);
 			console.log("ratio: "+ratio);
+
+			if( fuelUI_host != null ){
+				fuelUI_host.SetWebViewSize(innerWidth, innerHeight, ratio);
+			}
 
 			var TopLeftContainer, 
 				MiddleLeftContainer, 
@@ -63,111 +69,70 @@
 			var renderer = PIXI.autoDetectRenderer(innerWidth, innerHeight,options,true);
 
 			document.body.appendChild(renderer.view);
-
-			var loader = PIXI.loader
-				.add('buttonSlice','images/buttonSlice.png')
-				.add('popUpSlice','images/popUpSlice.png')
-				.load( function (loader, resources) {
-				})
-				.once('complete',onAssetsLoaded);
-
-			function onAssetsLoaded() {
             
-				//Left Containers			
-				TopLeftContainer = new PIXI.Container();
-				TopLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),-innerHeight/(2*ratio));
-				TopLeftContainer.anchor = new PIXI.Point(0,0);
-				stage.addChild(TopLeftContainer);
-				
-				MiddleLeftContainer = new PIXI.Container();
-				MiddleLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),0);
-				MiddleLeftContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(MiddleLeftContainer);
+			//Left Containers			
+			TopLeftContainer = new PIXI.Container();
+			TopLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),-innerHeight/(2*ratio));
+			TopLeftContainer.anchor = new PIXI.Point(0,0);
+			stage.addChild(TopLeftContainer);
+			
+			MiddleLeftContainer = new PIXI.Container();
+			MiddleLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),0);
+			MiddleLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(MiddleLeftContainer);
 
-				BottomLeftContainer = new PIXI.Container();
-				BottomLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),innerHeight/(2*ratio));
-				BottomLeftContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(BottomLeftContainer);
+			BottomLeftContainer = new PIXI.Container();
+			BottomLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),innerHeight/(2*ratio));
+			BottomLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(BottomLeftContainer);
 
-				//Center Containers
-				TopCenterContainer = new PIXI.Container();
-				TopCenterContainer.position = new PIXI.Point(0,-innerHeight/(2*ratio));
-				TopCenterContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(TopCenterContainer);
+			//Center Containers
+			TopCenterContainer = new PIXI.Container();
+			TopCenterContainer.position = new PIXI.Point(0,-innerHeight/(2*ratio));
+			TopCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(TopCenterContainer);
 
-				MiddleCenterContainer = new PIXI.Container();
-				MiddleCenterContainer.position = new PIXI.Point(0,0);
-				MiddleCenterContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(MiddleCenterContainer);
+			MiddleCenterContainer = new PIXI.Container();
+			MiddleCenterContainer.position = new PIXI.Point(0,0);
+			MiddleCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(MiddleCenterContainer);
 
-				BottomCenterContainer = new PIXI.Container();
-				BottomCenterContainer.position = new PIXI.Point(0,innerHeight/(2*ratio));
-				BottomCenterContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(BottomCenterContainer);
+			BottomCenterContainer = new PIXI.Container();
+			BottomCenterContainer.position = new PIXI.Point(0,innerHeight/(2*ratio));
+			BottomCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(BottomCenterContainer);
 
-				//Right Containers
-				TopRightContainer = new PIXI.Container();
-				TopRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),-innerHeight/(2*ratio));
-				TopRightContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(TopRightContainer);
+			//Right Containers
+			TopRightContainer = new PIXI.Container();
+			TopRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),-innerHeight/(2*ratio));
+			TopRightContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(TopRightContainer);
 
-				MiddleRightContainer = new PIXI.Container();
-				MiddleRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),0);
-				MiddleRightContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(MiddleRightContainer);
+			MiddleRightContainer = new PIXI.Container();
+			MiddleRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),0);
+			MiddleRightContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(MiddleRightContainer);
 
-				BottomRightContainer = new PIXI.Container();
-				BottomRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),innerHeight/(2*ratio));
-				BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
-				stage.addChild(BottomRightContainer);
-				
-				renderer.render(stage);
+			BottomRightContainer = new PIXI.Container();
+			BottomRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),innerHeight/(2*ratio));
+			BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
+			stage.addChild(BottomRightContainer);
+			
+			renderer.render(stage);
 
-
-
-				/*
-				var missionTab1 = new TabUIController( 1 , TabPosition.one , TabType.mission , OpenCloseTabCallback );
-				MiddleLeftContainer.addChild( missionTab1.CreateUI() );
-				tabs.push(missionTab1);
-
-				var missionTab2 = new TabUIController( 2 , TabPosition.two , TabType.mission , OpenCloseTabCallback );
-				MiddleLeftContainer.addChild( missionTab2.CreateUI() );
-				tabs.push(missionTab2);
-
-				var missionTab3 = new TabUIController( 3 , TabPosition.three , TabType.mission , OpenCloseTabCallback );
-				MiddleLeftContainer.addChild( missionTab3.CreateUI() );
-				tabs.push(missionTab3);
-
-				var missionTab4 = new TabUIController( 4 , TabPosition.four , TabType.mission , OpenCloseTabCallback );
-				MiddleLeftContainer.addChild( missionTab4.CreateUI() );
-				tabs.push(missionTab4);
-				
-				
-
-				var leaderBoardTab2 = new TabUIController( 6 , TabPosition.two , TabType.leaderBoard , OpenCloseTabCallback );
-				MiddleRightContainer.addChild( leaderBoardTab2.CreateUI() );
-				tabs.push(leaderBoardTab2);
-
-				var leaderBoardTab3 = new TabUIController( 7 , TabPosition.three , TabType.leaderBoard , OpenCloseTabCallback );
-				MiddleRightContainer.addChild( leaderBoardTab3.CreateUI() );
-				tabs.push(leaderBoardTab3);
-				
-				var leaderBoardTab4 = new TabUIController( 8 , TabPosition.four , TabType.leaderBoard , OpenCloseTabCallback );
-				MiddleRightContainer.addChild( leaderBoardTab4.CreateUI() );
-				tabs.push(leaderBoardTab4);
-				*/
-
-				InitEvents( event_Json );
-				InitMission( mission1_Json );
-				InitLeaderBoard( leaderBoard1_Json );
-				InitLeaderBoard( leaderBoard2_Json );
-			}
+			InitEvents( event_Json );
+			InitMission( mission1_Json );
+			InitLeaderBoard( leaderBoard1_Json );
+			InitLeaderBoard( leaderBoard2_Json );
 
 			function OpenCloseTabCallback(index,open) {
 				for( var i=0; i<tabs.length ; i++ ) {
 					if( tabs[i].index != index ) {
 						tabs[i].container.visible = !open;
 					}
+				}
+				if( fuelUI_host != null ){
+					fuelUI_host.OpenCloseTabCallback((open == 1)?true:false);
 				}
 				renderer.render(stage);
 			}

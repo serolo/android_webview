@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         });
         button1.setWidth(300);
         button1.setHeight(50);
-        button1.setX(300);
+        button1.setX(10);
         button1.setY(0);
 
         //rlp.setMargins(25, 0, 0, 0);
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
         button2.setWidth(300);
         button2.setHeight(50);
-        button2.setX(300);
+        button2.setX(10);
         button2.setY(300);
 
         relativeLayout.addView(button1);
@@ -116,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
         rlp.addRule(RelativeLayout.CENTER_VERTICAL);
 
         IgniteUILoyout igniteUILoyout = new IgniteUILoyout(this);
-        igniteUILoyout.loadContent();
-        igniteUILoyout.setZ(10);
         igniteUILoyout.setLayoutParams(rlp);
+        igniteUILoyout.loadContent();
+        //igniteUILoyout.setZ(10);
         relativeLayout.addView(igniteUILoyout);
 
 
