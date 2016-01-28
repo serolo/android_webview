@@ -228,16 +228,41 @@ TabUIController.prototype.CreateUI = function() {
 	backgroundTimer.addChild( text );
 	
 	var worldPosition = stage.toLocal(TabContainer.position);
-	var positionY = stage.toGlobal(TabContainer.position).y-TabContainer.height*ratio/2
-
+	var positionY = stage.toGlobal(TabContainer.position).y-TabContainer.height*ratio/2;
+    
+    /*
 	if( fuelUI_host != null ){
 		if( this.type == TabType.mission ) {
 			fuelUI_host.CreateMissionTab(this.tabPosition, 0, positionY, TabContainer.width*ratio, positionY+TabContainer.height*ratio+timer.height*ratio);
 		}
 		else {
-			fuelUI_host.CreateLeaderBoardTab(this.tabPosition,innerWidth-TabContainer.width*ratio,positionY,innerWidth,positionY+TabContainer.height*ratio+timer.height*ratio);
+			fuelUI_host.CreateLeaderBoardTab(this.tabPosition,
+			innerWidth-TabContainer.width*ratio,
+			positionY,
+			innerWidth,
+			positionY+TabContainer.height*ratio+timer.height*ratio);
 		}
 	}
+    */
+    
+    if( this.type == TabType.mission ) {
+        var message = "sdkAction=CreateMissionTab";
+        message += "&tabPosition="+ this.tabPosition;
+        message += "&left=0";
+        message += "&top="+ positionY;
+        message += "&right="+ (TabContainer.width*ratio);
+        message += "&bottom="+ (positionY+TabContainer.height*ratio+timer.height*ratio);
+        FuelService.messageHost( message );
+    }
+    else {
+        var message = "sdkAction=CreateLeaderBoardTab";
+        message += "&tabPosition="+ this.tabPosition;
+        message += "&left="+ (innerWidth-TabContainer.width*ratio);
+        message += "&top="+ positionY;
+        message += "&right="+ innerWidth;
+        message += "&bottom="+ (positionY+TabContainer.height*ratio+timer.height*ratio);
+        FuelService.messageHost( message );
+    }
 
 	return this.container;
 }
@@ -475,6 +500,8 @@ LeaderBoardUIController.prototype.CreateUI = function() {
 }
 
 LeaderBoardUIController.prototype.UpdateUI = function() {
+	this.eventNameText.text = this.localEventData.metadata.name;
+	this.eventDescText.text = this.localLeaderBoardData.metadata.name;
 }
 
 

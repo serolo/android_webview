@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +22,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * Created by sebastianromerolopez on 2015-12-24.
@@ -65,12 +70,13 @@ public class IgniteUIWebView extends WebView {
      */
     private void initialize(Context context) {
 
-        this.addJavascriptInterface(this, "fuelUI_host");
+        this.addJavascriptInterface( this , "FuelHostInterface");
 
         setClickable(true);
         setFocusable(true);
         setFocusableInTouchMode(true);
-        setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        setVerticalScrollBarEnabled(false);
+        setHorizontalScrollBarEnabled(false);
 
         setBackgroundColor(0);
         setBackgroundColor(Color.TRANSPARENT);
@@ -90,35 +96,23 @@ public class IgniteUIWebView extends WebView {
         initializeWebSettings();
         //initializeCookieSettings();
 
-
-
-        //missionTabPositions[0] = new Rect(0,getHeight()/2-300,150,getHeight()/2-150);
-
     }
 
+    /***************************************************************************
+     * onSizeChanged.
+     */
     @Override
     public void onSizeChanged(int w, int h, int ow, int oh) {
         super.onSizeChanged(w, h, ow, oh);
         Log.e("FuelIgniteUI", "onSizeChanged w = " + w + " - h = " + h);
     }
 
-
+    /***************************************************************************
+     * onDraw.
+     */
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-/*
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(3);
-
-        for( int i=0 ; i<missionTabsCount ; i++ ) {
-            canvas.drawRect( missionTabPositions[i], paint );
-        }
-
-        for( int i=0 ; i<leaderBoardTabsCount ; i++ ) {
-            canvas.drawRect( leaderBoardTabPositions[i], paint );
-        }
-        */
-
     }
 
     /***************************************************************************
@@ -154,7 +148,9 @@ public class IgniteUIWebView extends WebView {
         webSettings.setUseWideViewPort(true);
         webSettings.setSupportZoom(false);
         webSettings.setBuiltInZoomControls(false);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            webSettings.setDisplayZoomControls(false);
+        }
 
     }
 
@@ -205,12 +201,13 @@ public class IgniteUIWebView extends WebView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        Log.e("IgniteUIWebView", "onTouchEvent");
-        //if( oneTabOpen ) {
-            return super.dispatchTouchEvent(event);
-        //}
-/*
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        Log.e("IgniteUIWebView", "onTouchEvent: " + event.getAction());
+
+        if( oneTabOpen ) {
+            isInSideClicked = true;
+        }
+
+        if(event.getAction() == MotionEvent.ACTION_DOWN ) {
             int xTouch = (int)event.getX(), yTouch = (int)event.getY();
 
             for( int i=0 ; i<missionTabsCount ; i++ ) {
@@ -239,10 +236,76 @@ public class IgniteUIWebView extends WebView {
             isInSideClicked = false;
             return false;
         }
-        */
     }
 
     @JavascriptInterface
+    public void message(String query) {
+        Log.e("FuelIgniteUIWebView", "javascript message:"+query );
+        Bundle parameters = new Bundle();
+        for (String queryPair : query.split("&")) {
+            String[] keyValue = queryPair.split("=");
+
+            if (keyValue.length != 2) {
+                Log.e("FuelIgniteUIWebView","The query key-pair format is invalid for query parameter " + queryPair);
+                continue;
+            }
+
+            String key = keyValue[0];
+            String value = keyValue[1];
+
+            try {
+                value = URLDecoder.decode(value, "UTF-8");
+            } catch (UnsupportedEncodingException unsupportedEncodingException) {
+                Log.e("FuelIgniteUIWebView","The given encoding is invalid for query parameter " + value);
+                continue;
+            }
+
+            parameters.putString(key, value);
+        }
+
+        String action = parameters.getString("sdkAction");
+
+        switch (action) {
+            case "Log":
+                String message = parameters.getString("message");
+                WebViewLog(message);
+                break;
+            case "SetWebViewSize":
+                int width = Integer.parseInt(parameters.getString("width"));
+                int height = Integer.parseInt(parameters.getString("height"));
+                float ratio = Float.parseFloat(parameters.getString("ratio"));
+                SetWebViewSize(width,height,ratio);
+                break;
+            case "OpenCloseTabCallback":
+                boolean open = Boolean.parseBoolean(parameters.getString("open"));
+                OpenCloseTabCallback(open);
+                break;
+            case "CreateMissionTab":
+                int tabPositionM = Integer.parseInt(parameters.getString("tabPosition"));
+                float leftM = Float.parseFloat(parameters.getString("left"));
+                float topM = Float.parseFloat(parameters.getString("top"));
+                float rightM = Float.parseFloat(parameters.getString("right"));
+                float bottomM = Float.parseFloat(parameters.getString("bottom"));
+                CreateMissionTab(tabPositionM,leftM,topM,rightM,bottomM);
+                break;
+            case "CreateLeaderBoardTab":
+                int tabPositionL = Integer.parseInt(parameters.getString("tabPosition"));
+                float leftL = Float.parseFloat(parameters.getString("left"));
+                float topL = Float.parseFloat(parameters.getString("top"));
+                float rightL = Float.parseFloat(parameters.getString("right"));
+                float bottomL = Float.parseFloat(parameters.getString("bottom"));
+                CreateLeaderBoardTab(tabPositionL, leftL, topL, rightL, bottomL);
+                break;
+            default:
+                Log.e("FuelIgniteUIWebView","Encountered unhandled protocol action: " + action);
+                break;
+        }
+    }
+
+    private void WebViewLog(String message) {
+        Log.e("FuelIgniteUIWebView"," WebViewLog | " + message);
+    }
+
     public void SetWebViewSize(int width, int height, float ratio ) {
         Log.e("FuelIgniteUI", "SetWebViewSize width: " + width + " - height: "+height+" - ratio: "+ratio);
         webViewWidth = width;
@@ -259,13 +322,11 @@ public class IgniteUIWebView extends WebView {
 
     }
 
-    @JavascriptInterface
     public void OpenCloseTabCallback(boolean open) {
         Log.e("FuelIgniteUI", "OpenCloseTabCallback open = " + open);
         oneTabOpen = open;
     }
 
-    @JavascriptInterface
     public void CreateMissionTab( int tabPosition, float left, float top, float right , float bottom ) {
         Log.e("IgniteUIWebView", "CreateMissionTab tabPosition:"+tabPosition);
         Log.e("IgniteUIWebView", "CreateMissionTab left:"+left);
@@ -276,7 +337,6 @@ public class IgniteUIWebView extends WebView {
         missionTabsCount++;
     }
 
-    @JavascriptInterface
     public void CreateLeaderBoardTab( int tabPosition, float left, float top, float right , float bottom ) {
         Log.e("IgniteUIWebView", "CreateLeaderBoardTab tabPosition:"+tabPosition);
         Log.e("IgniteUIWebView", "CreateLeaderBoardTab left:"+left);
@@ -285,5 +345,26 @@ public class IgniteUIWebView extends WebView {
         Log.e("IgniteUIWebView", "CreateLeaderBoardTab bottom:"+bottom);
         leaderBoardTabPositions[tabPosition] = new Rect((int)(left*localRatio), (int)(top*localRatio), (int)(right*localRatio),(int)(bottom*localRatio));
         leaderBoardTabsCount++;
+    }
+
+    public boolean execMethod(String method, String... args) {
+        if (TextUtils.isEmpty(method)) {
+            return false;
+        }
+
+        final StringBuilder stringBuilder = new StringBuilder()
+                .append("javascript:ExecMethod(\"" + method + "\"");
+        if (args != null) {
+            for (String arg : args) {
+                if (TextUtils.isEmpty(arg)) {
+                    continue;
+                }
+                stringBuilder.append(", " + arg);
+            }
+        }
+
+        stringBuilder.append(")");
+        this.loadUrl(stringBuilder.toString());
+        return true;
     }
 }

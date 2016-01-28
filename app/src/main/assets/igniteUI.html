@@ -1,152 +1,173 @@
+<!DOCTYPE html>
 <html>
 	<head>
+        <meta charset="utf-8">
 		<title>pixi.js example 2 loading a sprite sheet</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="full-screen" content="yes"/>
+        <meta name="screen-orientation" content="portrait"/>
+        <meta name="x5-fullscreen" content="true"/>
+        <meta name="360-fullscreen" content="true"/>
+
 		<style>
-			canvas {
-				-webkit-tap-highlight-color: transparent;
-			}
-			body {
-				margin: 0;
-				padding: 0;
-				background-color: transparent;
-			}
+            body, canvas{
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                -khtml-user-select: none;
+                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                background-color: transparent;
+            }
 		</style>
-		<script src="scripts/igniteUI-externals.js"></script>
-		<script src="scripts/pixi.js"></script>
-		<script src="scripts/HashTable.js"></script>
-		<script src="scripts/DataDefinition.js"></script>
-		<script src="scripts/igniteUI-core.js"></script>
-	</head>
-	<body>		
-		<script> 
-			var fuelUI_host;
+		<script type="text/javascript" src="scripts/igniteUI-externals.js"></script>
+		<script type="text/javascript" src="scripts/pixi.js"></script>
+		<script type="text/javascript" src="scripts/HashTable.js"></script>
+		<script type="text/javascript" src="scripts/DataDefinition.js"></script>
+		<script type="text/javascript" src="scripts/igniteUI-core.js"></script>
+        <script type="text/javascript" src="scripts/FuelService.js"></script>
+        <script>
+            var stage, renderer;
 
-			var innerWidth = window.innerWidth,
-				innerHeight = window.innerHeight;
+            var TopLeftContainer,
+                MiddleLeftContainer,
+                BottomLeftContainer,
+                TopCenterContainer,
+                MiddleCenterContainer,
+                BottomCenterContainer,
+                TopRightContainer,
+                MiddleRightContainer,
+                BottomRightContainer;
 
-			var tabs = [];
+            var fuelUI_host, innerWidth, innerHeight, ratio;
 
-			var resources = PIXI.loader.resources;
+            var tabs = [];
+        
+            window.onload = function() {
 
-			var ratio = 1;
-
-            if(innerHeight > innerWidth) { 
-                ratio = innerWidth/640;
-            }    
-            else {
-            	ratio = innerHeight/960;
+                innerWidth = window.innerWidth,
+                innerHeight = window.innerHeight;
+                
+                ratio = 1;
+                
+                if(innerHeight > innerWidth) {
+                    ratio = innerWidth/640;
+                }
+                else {
+                    ratio = innerHeight/960;
+                }
+                
+                FuelService.log("innerWidth: "+innerWidth);
+                FuelService.log("innerHeight: "+innerHeight);
+                FuelService.log("ratio: "+ratio);
+                
+                var message = "sdkAction=SetWebViewSize";
+                message += "&width="+ innerWidth;
+                message += "&height="+ innerHeight;
+                message += "&ratio="+ ratio;
+                FuelService.messageHost( message );
+                
+                stage = new PIXI.Container();
+                stage.position = new PIXI.Point(innerWidth/2,innerHeight/2);
+                stage.width = innerWidth;
+                stage.height = innerHeight;
+                stage.anchor = new PIXI.Point(0.5,0.5);
+                stage.scale = new PIXI.Point(ratio,ratio);
+                
+                
+                var options = {view: sdk_canvas,transparent:true};
+                renderer = PIXI.autoDetectRenderer(innerWidth, innerHeight,options,false);
+                
+                document.body.appendChild(renderer.view);
+                
+                //Left Containers
+                TopLeftContainer = new PIXI.Container();
+                TopLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),-innerHeight/(2*ratio));
+                TopLeftContainer.anchor = new PIXI.Point(0,0);
+                stage.addChild(TopLeftContainer);
+                
+                MiddleLeftContainer = new PIXI.Container();
+                MiddleLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),0);
+                MiddleLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(MiddleLeftContainer);
+                
+                BottomLeftContainer = new PIXI.Container();
+                BottomLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),innerHeight/(2*ratio));
+                BottomLeftContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(BottomLeftContainer);
+                
+                //Center Containers
+                TopCenterContainer = new PIXI.Container();
+                TopCenterContainer.position = new PIXI.Point(0,-innerHeight/(2*ratio));
+                TopCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(TopCenterContainer);
+                
+                MiddleCenterContainer = new PIXI.Container();
+                MiddleCenterContainer.position = new PIXI.Point(0,0);
+                MiddleCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(MiddleCenterContainer);
+                
+                BottomCenterContainer = new PIXI.Container();
+                BottomCenterContainer.position = new PIXI.Point(0,innerHeight/(2*ratio));
+                BottomCenterContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(BottomCenterContainer);
+                
+                //Right Containers
+                TopRightContainer = new PIXI.Container();
+                TopRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),-innerHeight/(2*ratio));
+                TopRightContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(TopRightContainer);
+                
+                MiddleRightContainer = new PIXI.Container();
+                MiddleRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),0);
+                MiddleRightContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(MiddleRightContainer);
+                
+                BottomRightContainer = new PIXI.Container();
+                BottomRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),innerHeight/(2*ratio));
+                BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
+                stage.addChild(BottomRightContainer);
+                
+                renderer.render(stage);
+                
+                InitEvents( event_Json );
+                InitMission( mission1_Json );
+                InitLeaderBoard( leaderBoard1_Json );
+                InitLeaderBoard( leaderBoard2_Json );
             }
 
-            console.log("innerWidth: "+innerWidth);
-			console.log("innerHeight: "+innerHeight);
-			console.log("ratio: "+ratio);
+            function OpenCloseTabCallback(index,open) {
+                for( var i=0; i<tabs.length ; i++ ) {
+                    if( tabs[i].index != index ) {
+                        tabs[i].container.visible = !open;
+                    }
+                }
+                var openText = (open == 1)?"true":"false";
+                var message = "sdkAction=OpenCloseTabCallback";
+                message += "&open="+openText ;
+                FuelService.messageHost( message );
 
-			if( fuelUI_host != null ){
-				fuelUI_host.SetWebViewSize(innerWidth, innerHeight, ratio);
-			}
-
-			var TopLeftContainer, 
-				MiddleLeftContainer, 
-				BottomLeftContainer, 
-				TopCenterContainer, 
-				MiddleCenterContainer, 
-				BottomCenterContainer, 
-				TopRightContainer, 
-				MiddleRightContainer,
-				BottomRightContainer;
-
-			var stage = new PIXI.Container();
-			stage.position = new PIXI.Point(innerWidth/2,innerHeight/2);
-			stage.width = innerWidth;
-			stage.height = innerHeight;
-			stage.anchor = new PIXI.Point(0.5,0.5);
-			stage.scale = new PIXI.Point(ratio,ratio);
-
-			
-			var options = {transparent:true};
-
-			var renderer = PIXI.autoDetectRenderer(innerWidth, innerHeight,options,true);
-
-			document.body.appendChild(renderer.view);
+                /*
+                if( fuelUI_host != null ){
+                    fuelUI_host.OpenCloseTabCallback((open == 1)?true:false);
+                }
+                */
+                
+                renderer.render(stage);
+            }
             
-			//Left Containers			
-			TopLeftContainer = new PIXI.Container();
-			TopLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),-innerHeight/(2*ratio));
-			TopLeftContainer.anchor = new PIXI.Point(0,0);
-			stage.addChild(TopLeftContainer);
-			
-			MiddleLeftContainer = new PIXI.Container();
-			MiddleLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),0);
-			MiddleLeftContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(MiddleLeftContainer);
-
-			BottomLeftContainer = new PIXI.Container();
-			BottomLeftContainer.position = new PIXI.Point(-innerWidth/(2*ratio),innerHeight/(2*ratio));
-			BottomLeftContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(BottomLeftContainer);
-
-			//Center Containers
-			TopCenterContainer = new PIXI.Container();
-			TopCenterContainer.position = new PIXI.Point(0,-innerHeight/(2*ratio));
-			TopCenterContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(TopCenterContainer);
-
-			MiddleCenterContainer = new PIXI.Container();
-			MiddleCenterContainer.position = new PIXI.Point(0,0);
-			MiddleCenterContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(MiddleCenterContainer);
-
-			BottomCenterContainer = new PIXI.Container();
-			BottomCenterContainer.position = new PIXI.Point(0,innerHeight/(2*ratio));
-			BottomCenterContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(BottomCenterContainer);
-
-			//Right Containers
-			TopRightContainer = new PIXI.Container();
-			TopRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),-innerHeight/(2*ratio));
-			TopRightContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(TopRightContainer);
-
-			MiddleRightContainer = new PIXI.Container();
-			MiddleRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),0);
-			MiddleRightContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(MiddleRightContainer);
-
-			BottomRightContainer = new PIXI.Container();
-			BottomRightContainer.position = new PIXI.Point(innerWidth/(2*ratio),innerHeight/(2*ratio));
-			BottomRightContainer.anchor = new PIXI.Point(0.5,0.5);
-			stage.addChild(BottomRightContainer);
-			
-			renderer.render(stage);
-
-			InitEvents( event_Json );
-			InitMission( mission1_Json );
-			InitLeaderBoard( leaderBoard1_Json );
-			InitLeaderBoard( leaderBoard2_Json );
-
-			function OpenCloseTabCallback(index,open) {
-				for( var i=0; i<tabs.length ; i++ ) {
-					if( tabs[i].index != index ) {
-						tabs[i].container.visible = !open;
-					}
-				}
-				if( fuelUI_host != null ){
-					fuelUI_host.OpenCloseTabCallback((open == 1)?true:false);
-				}
-				renderer.render(stage);
-			}
-
-			function objToString (obj) {
-    			var str = '';
-    			for (var p in obj) {
-        			if (obj.hasOwnProperty(p)) {
-            			str += p + '::' + obj[p] + '\n';
-        			}
-    			}
-    			return str;
-			}
-
-		</script>
+            function objToString (obj) {
+                var str = '';
+                for (var p in obj) {
+                    if (obj.hasOwnProperty(p)) {
+                        str += p + '::' + obj[p] + '\n';
+                    }
+                }
+                return str;
+            }
+        
+        </script>
+	</head>
+    <body style="padding:0; margin: 0; background-color: transparent;">
+        <canvas id="sdk_canvas" style="padding:0; margin: 0; background-color: transparent;"></canvas>
 	</body>
 </html>

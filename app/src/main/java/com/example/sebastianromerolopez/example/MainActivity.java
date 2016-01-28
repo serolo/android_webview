@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 public class MainActivity extends AppCompatActivity {
 
     private RelativeLayout relativeLayout;
+    private IgniteUIWebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +116,19 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
         rlp.addRule(RelativeLayout.CENTER_VERTICAL);
 
-        IgniteUILoyout igniteUILoyout = new IgniteUILoyout(this);
-        igniteUILoyout.setLayoutParams(rlp);
-        igniteUILoyout.loadContent();
-        //igniteUILoyout.setZ(10);
-        relativeLayout.addView(igniteUILoyout);
+        webView = new IgniteUIWebView( this );
+        webView.setLayoutParams(
+                new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                )
+        );
+        //webView.setBackgroundColor(Color.parseColor(t));
+        //webView.bringToFront();
+        webView.setZ(10);
+        webView.loadUrl("file:///android_asset/igniteUI.html");
+
+        relativeLayout.addView(webView);
 
 
     }
